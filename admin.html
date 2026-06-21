@@ -11,6 +11,7 @@
 
     <div class="bg-animation-layer"></div>
 
+    <!-- Password Overlay -->
     <div id="login-overlay" style="position: fixed; top:0; left:0; width:100%; height:100%; background: #0f172a; z-index: 9999; display: flex; align-items: center; justify-content: center;">
         <div class="form-container" style="text-align: center; max-width: 450px;">
             <h2>🔒 Admin Security Access</h2>
@@ -23,6 +24,7 @@
         </div>
     </div>
 
+    <!-- Main Admin Dashboard -->
     <div id="admin-dashboard" style="display: none; padding: 2rem 5%;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">
             <h2>🛠️ JCL Live Tournament Editor</h2>
@@ -30,8 +32,9 @@
         </div>
 
         <div class="schedule-grid">
+            <!-- Points Box -->
             <div class="match-card">
-                <h3><i class="fas fa-chart-bar" style="color: #0284c7; margin-right: 8px;"></i> Points Table Standings</h3>
+                <h3><i class="fas fa-chart-bar" style="color: #0284c7; margin-right: 8px;"></i> Update Team Standings</h3>
                 <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.5rem;">Modify wins, losses, and overall standings.</p>
                 <div class="form-group">
                     <label>Select Team:</label>
@@ -44,16 +47,51 @@
                 <button onclick="savePointsTable()" class="btn-submit" style="background: #0284c7;">Apply Standings</button>
             </div>
 
+            <!-- Manage Teams (Add & Remove Feature) -->
             <div class="match-card">
-                <h3><i class="fas fa-plus-circle" style="color: #25d366; margin-right: 8px;"></i> Add New Team</h3>
-                <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.5rem;">Add a brand new team to the tournament league.</p>
+                <h3><i class="fas fa-users-cog" style="color: #25d366; margin-right: 8px;"></i> Manage League Teams</h3>
+                <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.5rem;">Add new teams or delete existing teams from the tournament.</p>
                 <div class="form-group">
-                    <label>Team Name with Emoji:</label>
+                    <label>New Team Name with Emoji:</label>
                     <input type="text" id="newTeamName" placeholder="e.g. Multan Sultans 👑">
                 </div>
-                <button onclick="addNewTeam()" class="btn-submit" style="background: #25d366;">Add Team to League</button>
+                <button onclick="addNewTeam()" class="btn-submit" style="background: #25d366; margin-bottom: 1.5rem;">Add Team to League</button>
+                
+                <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Existing Teams List (Click Remove to Delete):</label>
+                <div id="adminTeamsDeleteList" style="max-height: 180px; overflow-y: auto; background: var(--bg-dark); padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);">
+                    <!-- Dynamic Team List with Remove Buttons -->
+                </div>
             </div>
 
+            <!-- Match Reports Box (NEW FEATURE) -->
+            <div class="match-card">
+                <h3><i class="fas fa-file-alt" style="color: #a855f7; margin-right: 8px;"></i> Add Match Reports</h3>
+                <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.5rem;">Publish match reviews, result descriptions, or team notes.</p>
+                <div class="form-group">
+                    <label>Report Title / Headline:</label>
+                    <input type="text" id="reportTitle" placeholder="e.g. Tigers Won By 5 Wickets!">
+                </div>
+                <div class="form-group">
+                    <label>Report Content Details:</label>
+                    <textarea id="reportContent" rows="3" placeholder="Write match summary, best performances or updates here..."></textarea>
+                </div>
+                <button onclick="addMatchReport()" class="btn-submit" style="background: #a855f7;">Publish Report</button>
+                
+                <div id="adminReportsList" style="margin-top: 15px; max-height: 120px; overflow-y: auto; display: flex; flex-direction: column; gap: 5px;"></div>
+            </div>
+
+            <!-- Schedule Box (SUPPORTS MULTIPLE MATCHES A DAY) -->
+            <div class="match-card">
+                <h3><i class="fas fa-clock" style="color: #0284c7; margin-right: 8px;"></i> Add/Manage Fixtures</h3>
+                <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.5rem;">Add matches. You can add multiple matches for the same day!</p>
+                <div class="form-group"><label>Match Day & Date:</label><input type="text" id="matchDate" placeholder="e.g. Sunday - 21 June"></div>
+                <div class="form-group"><label>Competing Teams:</label><input type="text" id="matchTeams" placeholder="e.g. Tigers vs Kings (Match 1)"></div>
+                <div class="form-group"><label>Ground Venue & Time:</label><input type="text" id="matchVenue" placeholder="e.g. Ground A - 10:00 AM"></div>
+                <button onclick="addMatchSchedule()" class="btn-submit" style="background: #0284c7; margin-bottom: 10px;">Add Match Fixture</button>
+                <button onclick="clearAllSchedules()" class="btn-submit" style="background: #ef4444; font-size: 0.9rem; padding: 0.5rem;">Clear All Old Fixtures</button>
+            </div>
+
+            <!-- Gallery Box -->
             <div class="match-card">
                 <h3><i class="fas fa-images" style="color: #eab308; margin-right: 8px;"></i> Update Match Gallery</h3>
                 <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.5rem;">Upload new pictures from your laptop storage.</p>
@@ -65,15 +103,7 @@
                 <div id="gallery-preview-container" style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;"></div>
             </div>
 
-            <div class="match-card">
-                <h3><i class="fas fa-clock" style="color: #0284c7; margin-right: 8px;"></i> Next Match Details</h3>
-                <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.5rem;">Update the upcoming match card instantly.</p>
-                <div class="form-group"><label>Match Day & Date:</label><input type="text" id="matchDate" placeholder="e.g. Sunday - 21 June"></div>
-                <div class="form-group"><label>Competing Teams:</label><input type="text" id="matchTeams" placeholder="e.g. Tigers vs Kings"></div>
-                <div class="form-group"><label>Ground Venue & Time:</label><input type="text" id="matchVenue" placeholder="e.g. Local Ground A - 4:00 PM"></div>
-                <button onclick="saveMatchSchedule()" class="btn-submit" style="background: #0284c7;">Update Fixture</button>
-            </div>
-
+            <!-- Stats Box -->
             <div class="match-card">
                 <h3><i class="fas fa-trophy" style="color: #0284c7; margin-right: 8px;"></i> Tournament Performers</h3>
                 <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.5rem;">Highlight the tournament top batsman and bowler.</p>
