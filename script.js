@@ -1,7 +1,7 @@
-// Admin Configuration
+// Admin Password Configuration
 const ADMIN_PASSWORD = "admin123";
 
-// Initial Default League Data (Agar LocalStorage khali ho)
+// Default Fallback Data (If LocalStorage is Empty)
 const defaultTeams = [
     { name: "Lahore Tigers 🐯", wins: 0, losses: 0, points: 0 },
     { name: "Karachi Kings 👑", wins: 0, losses: 0, points: 0 },
@@ -19,31 +19,35 @@ const defaultImages = [
     "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=500"
 ];
 
-// Load Data From LocalStorage or Set Defaults
+// Initialize State from LocalStorage
 let leagueTeams = JSON.parse(localStorage.getItem("jcl_teams")) || defaultTeams;
 let matchSchedule = JSON.parse(localStorage.getItem("jcl_schedule")) || defaultMatches;
 let galleryImages = JSON.parse(localStorage.getItem("jcl_gallery")) || defaultImages;
-let playerStats = JSON.parse(localStorage.getItem("jcl_stats")) || { bName: "Ali Ahmed", bRuns: "120 Runs", bowName: "Zain Khan", bowWickets: "5 Wickets" };
+let playerStats = JSON.parse(localStorage.getItem("jcl_stats")) || { bName: "Ali Ahmed", bRuns: "120", bowName: "Zain Khan", bowWickets: "5" };
 
-// Run on page load
+// Document Event Core Orchestration
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
+    
+    // Main View Detection
     if (document.getElementById("pointsTableBody")) {
         renderMainWebsite();
     }
+    
+    // Dashboard Panel View Detection
     if (document.getElementById("updateTeamSelect")) {
         populateAdminSelect();
         renderAdminGalleryPreview();
     }
     
-    // Setup WhatsApp Form
+    // Registration Hook
     const regForm = document.getElementById("registrationForm");
     if(regForm) {
         regForm.addEventListener("submit", handleRegistration);
     }
 });
 
-// Theme Management
+// UI Theme Mode Handler
 function initTheme() {
     const toggleBtn = document.getElementById("theme-toggle");
     if(!toggleBtn) return;
@@ -59,7 +63,7 @@ function initTheme() {
     });
 }
 
-// Admin Password Check
+// Security Authentication Gateway
 function checkAdminPassword() {
     const entered = document.getElementById("adminPassword").value;
     const errorMsg = document.getElementById("login-error");
@@ -74,7 +78,7 @@ function checkAdminPassword() {
     }
 }
 
-// Populate Admin dropdown
+// Populate Selector Lists dynamically
 function populateAdminSelect() {
     const select = document.getElementById("updateTeamSelect");
     select.innerHTML = "";
@@ -86,7 +90,7 @@ function populateAdminSelect() {
     });
 }
 
-// Add New Team Function
+// Append New Dynamic Team Element
 function addNewTeam() {
     const teamNameInput = document.getElementById("newTeamName");
     const name = teamNameInput.value.trim();
@@ -104,7 +108,7 @@ function addNewTeam() {
     alert("New Team Added Successfully!");
 }
 
-// Upload Images from Laptop Storage (Converts to Base64)
+// File Storage Reader API to base64 conversions
 function uploadGalleryImage() {
     const fileInput = document.getElementById("galleryImageInput");
     const file = fileInput.files[0];
@@ -117,16 +121,16 @@ function uploadGalleryImage() {
     const reader = new FileReader();
     reader.onloadend = function () {
         const base64String = reader.result;
-        galleryImages.unshift(base64String); // Add new image to start of array
+        galleryImages.unshift(base64String); // New elements prepend to priority view
         localStorage.setItem("jcl_gallery", JSON.stringify(galleryImages));
         renderAdminGalleryPreview();
-        fileInput.value = ""; // Reset input
+        fileInput.value = ""; 
         alert("Image uploaded from laptop successfully!");
     };
     reader.readAsDataURL(file);
 }
 
-// Render Admin Gallery Images Preview with Delete option
+// Render Control View Matrix for Previews
 function renderAdminGalleryPreview() {
     const container = document.getElementById("gallery-preview-container");
     if (!container) return;
@@ -158,7 +162,7 @@ function renderAdminGalleryPreview() {
     });
 }
 
-// Save Standings
+// Store Standings Vectors
 function savePointsTable() {
     const selectedIndex = document.getElementById("updateTeamSelect").value;
     const wins = parseInt(document.getElementById("teamWins").value) || 0;
@@ -173,14 +177,13 @@ function savePointsTable() {
     alert("Points table updated!");
 }
 
-// Save Match Schedule
+// Store Dynamic Calendars
 function saveMatchSchedule() {
     const mDate = document.getElementById("matchDate").value;
     const mTeams = document.getElementById("matchTeams").value;
     const mVenue = document.getElementById("matchVenue").value;
 
     if(mDate && mTeams && mVenue) {
-        // Update first fixture as next match
         matchSchedule[0] = { date: mDate, teams: mTeams, venue: mVenue };
         localStorage.setItem("jcl_schedule", JSON.stringify(matchSchedule));
         alert("Match Card Updated Successfully!");
@@ -189,7 +192,7 @@ function saveMatchSchedule() {
     }
 }
 
-// Save Player Stats
+// Store Performer Profiles
 function savePlayerStats() {
     playerStats.bName = document.getElementById("topBatsmanName").value || playerStats.bName;
     playerStats.bRuns = document.getElementById("topBatsmanRuns").value || playerStats.bRuns;
@@ -200,57 +203,64 @@ function savePlayerStats() {
     alert("Player Stats published!");
 }
 
-// Render everything on Main Website (index.html)
+// Main DOM Render Engines
 function renderMainWebsite() {
-    // 1. Render Table sorted by highest points
+    // 1. Points Matrix Engine (Sorted by Descending Performance Score Weights)
     const tableBody = document.getElementById("pointsTableBody");
-    tableBody.innerHTML = "";
-    
-    let sortedTeams = [...leagueTeams].sort((a,b) => b.points - a.points);
-    
-    sortedTeams.forEach((team, index) => {
-        let totalMatches = team.wins + team.losses;
-        let row = `<tr>
-            <td>${index + 1}</td>
-            <td><strong>${team.name}</strong></td>
-            <td>${totalMatches}</td>
-            <td>${team.wins}</td>
-            <td>${team.losses}</td>
-            <td style="color:#3b82f6; font-weight:bold;">${team.points}</td>
-        </tr>`;
-        tableBody.innerHTML += row;
-    });
+    if (tableBody) {
+        tableBody.innerHTML = "";
+        let sortedTeams = [...leagueTeams].sort((a,b) => b.points - a.points);
+        
+        sortedTeams.forEach((team, index) => {
+            let totalMatches = team.wins + team.losses;
+            let row = `<tr>
+                <td>${index + 1}</td>
+                <td><strong>${team.name}</strong></td>
+                <td>${totalMatches}</td>
+                <td>${team.wins}</td>
+                <td>${team.losses}</td>
+                <td style="color:#3b82f6; font-weight:bold;">${team.points}</td>
+            </tr>`;
+            tableBody.innerHTML += row;
+        });
+    }
 
-    // 2. Render Schedule Grid
+    // 2. Schedule Grid Render
     const scheduleGrid = document.getElementById("scheduleGridContainer");
-    scheduleGrid.innerHTML = "";
-    matchSchedule.forEach(match => {
-        let card = `<div class="match-card">
-            <div class="match-date"><i class="fas fa-calendar-alt"></i> ${match.date}</div>
-            <div class="teams">${match.teams}</div>
-            <div class="venue"><i class="fas fa-map-marker-alt"></i> ${match.venue}</div>
-        </div>`;
-        scheduleGrid.innerHTML += card;
-    });
+    if (scheduleGrid) {
+        scheduleGrid.innerHTML = "";
+        matchSchedule.forEach(match => {
+            let card = `<div class="match-card">
+                <div class="match-date"><i class="fas fa-calendar-alt"></i> ${match.date}</div>
+                <div class="teams">${match.teams}</div>
+                <div class="venue"><i class="fas fa-map-marker-alt"></i> ${match.venue}</div>
+            </div>`;
+            scheduleGrid.innerHTML += card;
+        });
+    }
 
-    // 3. Render Gallery Grid
+    // 3. Dynamic Media View Streaming Engine
     const galleryGrid = document.getElementById("live-features-grid");
-    galleryGrid.innerHTML = "";
-    galleryImages.forEach(imgSrc => {
-        let item = `<div class="gallery-item">
-            <img src="${imgSrc}" alt="JCL Live Action">
-        </div>`;
-        galleryGrid.innerHTML += item;
-    });
+    if (galleryGrid) {
+        galleryGrid.innerHTML = "";
+        galleryImages.forEach(imgSrc => {
+            let item = `<div class="gallery-item">
+                <img src="${imgSrc}" alt="JCL Live Action">
+            </div>`;
+            galleryGrid.innerHTML += item;
+        });
+    }
 
-    // 4. Render Stats
-    document.getElementById("displayBatsmanName").innerText = playerStats.bName;
-    document.getElementById("displayBatsmanRuns").innerText = playerStats.bRuns + " Runs";
-    document.getElementById("displayBowlerName").innerText = playerStats.bowName;
-    document.getElementById("displayBowlerWickets").innerText = playerStats.bowWickets + " Wickets";
+    // 4. Performers Cards View Engine
+    if(document.getElementById("displayBatsmanName")) {
+        document.getElementById("displayBatsmanName").innerText = playerStats.bName;
+        document.getElementById("displayBatsmanRuns").innerText = playerStats.bRuns + " Runs";
+        document.getElementById("displayBowlerName").innerText = playerStats.bowName;
+        document.getElementById("displayBowlerWickets").innerText = playerStats.bowWickets + " Wickets";
+    }
 }
 
-// Handle WhatsApp Registration
+// Form Messenger Event Hook (External Redirect Linkage)
 function handleRegistration(e) {
     e.preventDefault();
     const tName = document.getElementById("teamName").value;
