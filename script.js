@@ -1,141 +1,263 @@
-// ==========================================
-// THEME TOGGLE FUNCTIONALITY
-// ==========================================
-const themeToggle = document.getElementById('theme-toggle');
-if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-        document.body.classList.toggle('light-theme');
-        const icon = themeToggle.querySelector('i');
-        if (document.body.classList.contains('light-theme')) {
-            icon.className = 'fas fa-sun';
-        } else {
-            icon.className = 'fas fa-moon';
-        }
-    });
-}
+// Admin Configuration
+const ADMIN_PASSWORD = "admin123";
 
-// ==========================================
-// ADMIN PANEL LOGIN & CONTROLS LOGIC
-// ==========================================
+// Initial Default League Data (Agar LocalStorage khali ho)
+const defaultTeams = [
+    { name: "Lahore Tigers 🐯", wins: 0, losses: 0, points: 0 },
+    { name: "Karachi Kings 👑", wins: 0, losses: 0, points: 0 },
+    { name: "Islamabad United 🦁", wins: 0, losses: 0, points: 0 }
+];
 
-// SECURE PASSWORD SET TO: JuniorTeam
-function checkAdminPassword() {
-    const passwordInput = document.getElementById('adminPassword').value;
-    const errorMsg = document.getElementById('login-error');
+const defaultMatches = [
+    { date: "Sunday - 21 June", teams: "Tigers vs Kings", venue: "Local Ground A - 4:00 PM" },
+    { date: "Saturday - 27 June", teams: "United vs Tigers", venue: "Local Ground B - 4:00 PM" }
+];
+
+const defaultImages = [
+    "https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=500",
+    "https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?w=500",
+    "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=500"
+];
+
+// Load Data From LocalStorage or Set Defaults
+let leagueTeams = JSON.parse(localStorage.getItem("jcl_teams")) || defaultTeams;
+let matchSchedule = JSON.parse(localStorage.getItem("jcl_schedule")) || defaultMatches;
+let galleryImages = JSON.parse(localStorage.getItem("jcl_gallery")) || defaultImages;
+let playerStats = JSON.parse(localStorage.getItem("jcl_stats")) || { bName: "Ali Ahmed", bRuns: "120 Runs", bowName: "Zain Khan", bowWickets: "5 Wickets" };
+
+// Run on page load
+document.addEventListener("DOMContentLoaded", () => {
+    initTheme();
+    if (document.getElementById("pointsTableBody")) {
+        renderMainWebsite();
+    }
+    if (document.getElementById("updateTeamSelect")) {
+        populateAdminSelect();
+        renderAdminGalleryPreview();
+    }
     
-    if (passwordInput === 'JuniorTeam') {
-        document.getElementById('login-overlay').style.display = 'none';
-        document.getElementById('admin-dashboard').style.display = 'block';
-        loadAdminCurrentData();
-    } else {
-        errorMsg.style.display = 'block';
-    }
-}
-
-function savePointsTable() {
-    const teamIndex = document.getElementById('updateTeamSelect').value;
-    const wins = document.getElementById('teamWins').value || "0";
-    const losses = document.getElementById('teamLosses').value || "0";
-    const points = document.getElementById('teamPoints').value || "0";
-
-    localStorage.setItem(`team_${teamIndex}_w`, wins);
-    localStorage.setItem(`team_${teamIndex}_l`, losses);
-    localStorage.setItem(`team_${teamIndex}_pts`, points);
-
-    alert("Points Table Updated Successfully!");
-}
-
-function saveMatchSchedule() {
-    const date = document.getElementById('matchDate').value;
-    const teams = document.getElementById('matchTeams').value;
-    const venue = document.getElementById('matchVenue').value;
-
-    if(date) localStorage.setItem('m_date', date);
-    if(teams) localStorage.setItem('m_teams', teams);
-    if(venue) localStorage.setItem('m_venue', venue);
-
-    alert("Match Schedule Updated!");
-}
-
-function savePlayerStats() {
-    localStorage.setItem('bat_name', document.getElementById('topBatsmanName').value);
-    localStorage.setItem('bat_runs', document.getElementById('topBatsmanRuns').value);
-    localStorage.setItem('bowl_name', document.getElementById('topBowlerName').value);
-    localStorage.setItem('bowl_wkt', document.getElementById('topBowlerWickets').value);
-
-    alert("Player Statistics Updated!");
-}
-
-function loadAdminCurrentData() {
-    if(document.getElementById('matchDate')) {
-        document.getElementById('topBatsmanName').value = localStorage.getItem('bat_name') || "Ali Ahmed";
-        document.getElementById('topBatsmanRuns').value = localStorage.getItem('bat_runs') || "120 Runs";
-        document.getElementById('topBowlerName').value = localStorage.getItem('bowl_name') || "Zain Khan";
-        document.getElementById('topBowlerWickets').value = localStorage.getItem('bowl_wkt') || "5 Wickets";
-    }
-}
-
-// ==========================================
-// DYNAMIC DATA POPULATION ON LIVE WEBSITE
-// ==========================================
-window.addEventListener('DOMContentLoaded', () => {
-    // 1. Live Points Table Render
-    for (let i = 0; i < 3; i++) {
-        const row = document.querySelectorAll('.points-table tbody tr')[i];
-        if (row) {
-            const w = localStorage.getItem(`team_${i}_w`);
-            const l = localStorage.getItem(`team_${i}_l`);
-            const pts = localStorage.getItem(`team_${i}_pts`);
-            if (w !== null) row.cells[2].innerText = w;
-            if (l !== null) row.cells[3].innerText = l;
-            // Total matches played calculator (Wins + Losses)
-            if (w !== null && l !== null) {
-                row.cells[1].innerText = parseInt(w) + parseInt(l);
-            }
-            if (pts !== null) row.cells[5].innerText = pts;
-        }
-    }
-
-    // 2. Live Schedule Card Render
-    const matchCard = document.querySelector('.match-card');
-    if (matchCard && localStorage.getItem('m_date')) {
-        matchCard.querySelector('.match-date').innerHTML = `<i class="fas fa-calendar-alt"></i> ${localStorage.getItem('m_date')}`;
-        matchCard.querySelector('.teams').innerText = localStorage.getItem('m_teams');
-        matchCard.querySelector('.venue').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${localStorage.getItem('m_venue')}`;
-    }
-
-    // 3. Live Stats Highlight Render
-    const statNames = document.querySelectorAll('.stat-name');
-    const statValues = document.querySelectorAll('.stat-value');
-    if (statNames.length > 0 && localStorage.getItem('bat_name')) {
-        statNames[0].innerText = localStorage.getItem('bat_name');
-        statValues[0].innerText = localStorage.getItem('bat_runs');
-        statNames[1].innerText = localStorage.getItem('bowl_name');
-        statValues[1].innerText = localStorage.getItem('bowl_wkt');
+    // Setup WhatsApp Form
+    const regForm = document.getElementById("registrationForm");
+    if(regForm) {
+        regForm.addEventListener("submit", handleRegistration);
     }
 });
 
-// ==========================================
-// WHATSAPP AUTOMATIC REGISTRATION FORMATTING
-// ==========================================
-const regForm = document.getElementById('registrationForm');
-if(regForm) {
-    regForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const teamName = document.getElementById('teamName').value;
-        const captainName = document.getElementById('captainName').value;
-        const contactNum = document.getElementById('contactNum').value;
-        const playerList = document.getElementById('playerList').value;
-
-        const whatsappMessage = `🏏 *NEW TEAM REGISTRATION* 🏏\n` +
-                                `----------------------------------\n` +
-                                `🏆 *Team Name:* ${teamName}\n` +
-                                `👤 *Captain:* ${captainName}\n` +
-                                `📞 *Contact:* ${contactNum}\n` +
-                                `👥 *Players:* \n${playerList}\n` +
-                                `----------------------------------`;
-
-        const whatsappUrl = `https://wa.me/923024337352?text=${encodeURIComponent(whatsappMessage)}`;
-        window.open(whatsappUrl, '_blank');
+// Theme Management
+function initTheme() {
+    const toggleBtn = document.getElementById("theme-toggle");
+    if(!toggleBtn) return;
+    
+    toggleBtn.addEventListener("click", () => {
+        document.body.classList.toggle("light-theme");
+        const icon = toggleBtn.querySelector("i");
+        if(document.body.classList.contains("light-theme")) {
+            icon.className = "fas fa-sun";
+        } else {
+            icon.className = "fas fa-moon";
+        }
     });
+}
+
+// Admin Password Check
+function checkAdminPassword() {
+    const entered = document.getElementById("adminPassword").value;
+    const errorMsg = document.getElementById("login-error");
+    const overlay = document.getElementById("login-overlay");
+    const dashboard = document.getElementById("admin-dashboard");
+
+    if (entered === ADMIN_PASSWORD) {
+        overlay.style.display = "none";
+        dashboard.style.display = "block";
+    } else {
+        errorMsg.style.display = "block";
+    }
+}
+
+// Populate Admin dropdown
+function populateAdminSelect() {
+    const select = document.getElementById("updateTeamSelect");
+    select.innerHTML = "";
+    leagueTeams.forEach((team, index) => {
+        let opt = document.createElement("option");
+        opt.value = index;
+        opt.innerText = team.name;
+        select.appendChild(opt);
+    });
+}
+
+// Add New Team Function
+function addNewTeam() {
+    const teamNameInput = document.getElementById("newTeamName");
+    const name = teamNameInput.value.trim();
+    
+    if(name === "") {
+        alert("Please enter a valid team name!");
+        return;
+    }
+
+    leagueTeams.push({ name: name, wins: 0, losses: 0, points: 0 });
+    localStorage.setItem("jcl_teams", JSON.stringify(leagueTeams));
+    
+    teamNameInput.value = "";
+    populateAdminSelect();
+    alert("New Team Added Successfully!");
+}
+
+// Upload Images from Laptop Storage (Converts to Base64)
+function uploadGalleryImage() {
+    const fileInput = document.getElementById("galleryImageInput");
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert("Please select an image file first.");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = function () {
+        const base64String = reader.result;
+        galleryImages.unshift(base64String); // Add new image to start of array
+        localStorage.setItem("jcl_gallery", JSON.stringify(galleryImages));
+        renderAdminGalleryPreview();
+        fileInput.value = ""; // Reset input
+        alert("Image uploaded from laptop successfully!");
+    };
+    reader.readAsDataURL(file);
+}
+
+// Render Admin Gallery Images Preview with Delete option
+function renderAdminGalleryPreview() {
+    const container = document.getElementById("gallery-preview-container");
+    if (!container) return;
+    container.innerHTML = "";
+
+    galleryImages.forEach((imgSrc, index) => {
+        let wrapper = document.createElement("div");
+        wrapper.style.position = "relative";
+        
+        let img = document.createElement("img");
+        img.src = imgSrc;
+        img.style.width = "80px";
+        img.style.height = "60px";
+        img.style.objectFit = "cover";
+        img.style.borderRadius = "4px";
+
+        let delBtn = document.createElement("button");
+        delBtn.innerHTML = "&times;";
+        delBtn.style.cssText = "position:absolute; top:0; right:0; background:red; color:white; border:none; border-radius:50%; cursor:pointer; width:18px; height:18px; font-size:12px; display:flex; align-items:center; justify-content:center;";
+        delBtn.onclick = () => {
+            galleryImages.splice(index, 1);
+            localStorage.setItem("jcl_gallery", JSON.stringify(galleryImages));
+            renderAdminGalleryPreview();
+        };
+
+        wrapper.appendChild(img);
+        wrapper.appendChild(delBtn);
+        container.appendChild(wrapper);
+    });
+}
+
+// Save Standings
+function savePointsTable() {
+    const selectedIndex = document.getElementById("updateTeamSelect").value;
+    const wins = parseInt(document.getElementById("teamWins").value) || 0;
+    const losses = parseInt(document.getElementById("teamLosses").value) || 0;
+    const points = parseInt(document.getElementById("teamPoints").value) || 0;
+
+    leagueTeams[selectedIndex].wins = wins;
+    leagueTeams[selectedIndex].losses = losses;
+    leagueTeams[selectedIndex].points = points;
+
+    localStorage.setItem("jcl_teams", JSON.stringify(leagueTeams));
+    alert("Points table updated!");
+}
+
+// Save Match Schedule
+function saveMatchSchedule() {
+    const mDate = document.getElementById("matchDate").value;
+    const mTeams = document.getElementById("matchTeams").value;
+    const mVenue = document.getElementById("matchVenue").value;
+
+    if(mDate && mTeams && mVenue) {
+        // Update first fixture as next match
+        matchSchedule[0] = { date: mDate, teams: mTeams, venue: mVenue };
+        localStorage.setItem("jcl_schedule", JSON.stringify(matchSchedule));
+        alert("Match Card Updated Successfully!");
+    } else {
+        alert("Please fill all fields!");
+    }
+}
+
+// Save Player Stats
+function savePlayerStats() {
+    playerStats.bName = document.getElementById("topBatsmanName").value || playerStats.bName;
+    playerStats.bRuns = document.getElementById("topBatsmanRuns").value || playerStats.bRuns;
+    playerStats.bowName = document.getElementById("topBowlerName").value || playerStats.bowName;
+    playerStats.bowWickets = document.getElementById("topBowlerWickets").value || playerStats.bowWickets;
+
+    localStorage.setItem("jcl_stats", JSON.stringify(playerStats));
+    alert("Player Stats published!");
+}
+
+// Render everything on Main Website (index.html)
+function renderMainWebsite() {
+    // 1. Render Table sorted by highest points
+    const tableBody = document.getElementById("pointsTableBody");
+    tableBody.innerHTML = "";
+    
+    let sortedTeams = [...leagueTeams].sort((a,b) => b.points - a.points);
+    
+    sortedTeams.forEach((team, index) => {
+        let totalMatches = team.wins + team.losses;
+        let row = `<tr>
+            <td>${index + 1}</td>
+            <td><strong>${team.name}</strong></td>
+            <td>${totalMatches}</td>
+            <td>${team.wins}</td>
+            <td>${team.losses}</td>
+            <td style="color:#3b82f6; font-weight:bold;">${team.points}</td>
+        </tr>`;
+        tableBody.innerHTML += row;
+    });
+
+    // 2. Render Schedule Grid
+    const scheduleGrid = document.getElementById("scheduleGridContainer");
+    scheduleGrid.innerHTML = "";
+    matchSchedule.forEach(match => {
+        let card = `<div class="match-card">
+            <div class="match-date"><i class="fas fa-calendar-alt"></i> ${match.date}</div>
+            <div class="teams">${match.teams}</div>
+            <div class="venue"><i class="fas fa-map-marker-alt"></i> ${match.venue}</div>
+        </div>`;
+        scheduleGrid.innerHTML += card;
+    });
+
+    // 3. Render Gallery Grid
+    const galleryGrid = document.getElementById("live-features-grid");
+    galleryGrid.innerHTML = "";
+    galleryImages.forEach(imgSrc => {
+        let item = `<div class="gallery-item">
+            <img src="${imgSrc}" alt="JCL Live Action">
+        </div>`;
+        galleryGrid.innerHTML += item;
+    });
+
+    // 4. Render Stats
+    document.getElementById("displayBatsmanName").innerText = playerStats.bName;
+    document.getElementById("displayBatsmanRuns").innerText = playerStats.bRuns + " Runs";
+    document.getElementById("displayBowlerName").innerText = playerStats.bowName;
+    document.getElementById("displayBowlerWickets").innerText = playerStats.bowWickets + " Wickets";
+}
+
+// Handle WhatsApp Registration
+function handleRegistration(e) {
+    e.preventDefault();
+    const tName = document.getElementById("teamName").value;
+    const cName = document.getElementById("captainName").value;
+    const phone = document.getElementById("contactNum").value;
+    const pList = document.getElementById("playerList").value;
+
+    const message = `Hello JCL Management! %0A%0Aআমি আমার টিম রেজিস্টার করতে চাই:%0A*Team Name:* ${tName}%0A*Captain Name:* ${cName}%0A*Contact:* ${phone}%0A*Players:* ${pList}`;
+    window.open(`https://wa.me/923024337352?text=${message}`, '_blank');
 }
