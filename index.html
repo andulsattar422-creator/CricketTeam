@@ -9,6 +9,7 @@
     <meta name="keywords" content="JCL, Junior Cricket League, JCL Tournament Hub, Cricket Match Schedule, JCL Standings, Cricket Team Registration">
     <meta name="author" content="Abdul Rehman">
 
+    <!-- Open Graph Tags (WhatsApp Preview) -->
     <meta name="google-site-verification" content="XOxlMM32t-NYbos7voCNPsO1_uMSMT5YzZ1wniK483E" />
     <meta property="og:title" content="Junior Cricket League | Premium Hub">
     <meta property="og:description" content="Check out the latest live standings, fixtures, player stats, and register your team via WhatsApp!">
@@ -26,6 +27,7 @@
         <div class="logo">🏏 JCL <span>LEAGUE</span></div>
         <nav>
             <a href="#home">Home</a>
+            <a href="#reports">Reports</a>
             <a href="#schedule">Schedule</a>
             <a href="#gallery">Gallery</a>
             <a href="#stats">Stats</a>
@@ -42,6 +44,7 @@
         </div>
     </section>
 
+    <!-- POINTS TABLE SECTION -->
     <section class="section-container">
         <h2 class="section-title">Tournament Points Table</h2>
         <div class="table-responsive">
@@ -57,24 +60,36 @@
                     </tr>
                 </thead>
                 <tbody id="pointsTableBody">
-                    </tbody>
+                    <!-- Dynamically Loaded -->
+                </tbody>
             </table>
         </div>
     </section>
 
-    <section id="schedule" class="section-container bg-alt">
+    <!-- NEW MATCH REPORTS SECTION (RIGHT BELOW POINTS TABLE) -->
+    <section id="reports" class="section-container bg-alt">
+        <h2 class="section-title">Latest Match Reports & News</h2>
+        <div class="schedule-grid" id="matchReportsContainer">
+            <!-- Dynamically Loaded from JavaScript -->
+        </div>
+    </section>
+
+    <!-- SCHEDULE SECTION (SUPPORTS MULTIPLE MATCHES PER DAY) -->
+    <section id="schedule" class="section-container">
         <h2 class="section-title">Match Calendar & Fixtures</h2>
         <div class="schedule-grid" id="scheduleGridContainer">
-            </div>
+            <!-- Dynamically Loaded -->
+        </div>
     </section>
 
-    <section id="gallery" class="section-container">
+    <section id="gallery" class="section-container bg-alt">
         <h2 class="section-title">Match Gallery & Dynamic Live Stream</h2>
         <div class="gallery-grid" id="live-features-grid">
-            </div>
+            <!-- Dynamically Loaded -->
+        </div>
     </section>
 
-    <section id="stats" class="section-container bg-alt">
+    <section id="stats" class="section-container">
         <h2 class="section-title">Top Performers</h2>
         <div class="stats-grid">
             <div class="stat-card">
@@ -92,7 +107,7 @@
         </div>
     </section>
 
-    <section id="register" class="section-container">
+    <section id="register" class="section-container bg-alt">
         <h2 class="section-title">Online Team Registration</h2>
         <div class="form-container">
             <form id="registrationForm">
