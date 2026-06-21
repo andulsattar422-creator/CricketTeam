@@ -4,22 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JCL - Secure Admin Dashboard</title>
-    <!-- CSS Link Fixed -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="dark-theme">
 
-    <!-- Background Animation Layer -->
     <div class="bg-animation-layer"></div>
 
-    <!-- Password Login Section -->
     <div id="login-overlay" style="position: fixed; top:0; left:0; width:100%; height:100%; background: #0f172a; z-index: 9999; display: flex; align-items: center; justify-content: center;">
         <div class="form-container" style="text-align: center; max-width: 450px;">
             <h2>🔒 Admin Security Access</h2>
             <p style="margin-bottom: 1.5rem; color: #94a3b8; font-size: 0.9rem;">Authorized access only. Enter password to manage dashboard.</p>
             <div class="form-group">
-                <!-- Added enter key support for login -->
                 <input type="password" id="adminPassword" placeholder="Enter Password" style="text-align: center; letter-spacing: 2px;" onkeypress="if(event.key === 'Enter') checkAdminPassword()">
             </div>
             <button onclick="checkAdminPassword()" class="btn-submit" style="background: #0284c7;">Unlock Control Panel</button>
@@ -27,7 +23,6 @@
         </div>
     </div>
 
-    <!-- Main Admin Dashboard -->
     <div id="admin-dashboard" style="display: none; padding: 2rem 5%;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">
             <h2>🛠️ JCL Live Tournament Editor</h2>
@@ -35,14 +30,12 @@
         </div>
 
         <div class="schedule-grid">
-            <!-- Update Points Table Box -->
             <div class="match-card">
                 <h3><i class="fas fa-chart-bar" style="color: #0284c7; margin-right: 8px;"></i> Points Table Standings</h3>
                 <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.5rem;">Modify wins, losses, and overall standings.</p>
                 <div class="form-group">
                     <label>Select Team:</label>
                     <select id="updateTeamSelect" style="width:100%; padding:0.8rem; background: var(--bg-dark); color:white; border-radius:6px; border:1px solid rgba(255,255,255,0.2);">
-                        <!-- Options will be loaded dynamically -->
                     </select>
                 </div>
                 <div class="form-group"><input type="number" id="teamWins" placeholder="Matches Won"></div>
@@ -51,7 +44,6 @@
                 <button onclick="savePointsTable()" class="btn-submit" style="background: #0284c7;">Apply Standings</button>
             </div>
 
-            <!-- Add New Team Box -->
             <div class="match-card">
                 <h3><i class="fas fa-plus-circle" style="color: #25d366; margin-right: 8px;"></i> Add New Team</h3>
                 <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.5rem;">Add a brand new team to the tournament league.</p>
@@ -62,7 +54,6 @@
                 <button onclick="addNewTeam()" class="btn-submit" style="background: #25d366;">Add Team to League</button>
             </div>
 
-            <!-- Manage Gallery Images -->
             <div class="match-card">
                 <h3><i class="fas fa-images" style="color: #eab308; margin-right: 8px;"></i> Update Match Gallery</h3>
                 <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.5rem;">Upload new pictures from your laptop storage.</p>
@@ -71,12 +62,9 @@
                     <input type="file" id="galleryImageInput" accept="image/*" style="padding: 0.5rem; background: var(--bg-dark); color: white; border-radius: 6px; width: 100%;">
                 </div>
                 <button onclick="uploadGalleryImage()" class="btn-submit" style="background: #eab308; color: #000;">Upload Picture</button>
-                <div id="gallery-preview-container" style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
-                    <!-- Previews will show here -->
-                </div>
+                <div id="gallery-preview-container" style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;"></div>
             </div>
 
-            <!-- Update Schedule Box -->
             <div class="match-card">
                 <h3><i class="fas fa-clock" style="color: #0284c7; margin-right: 8px;"></i> Next Match Details</h3>
                 <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.5rem;">Update the upcoming match card instantly.</p>
@@ -86,7 +74,6 @@
                 <button onclick="saveMatchSchedule()" class="btn-submit" style="background: #0284c7;">Update Fixture</button>
             </div>
 
-            <!-- Update Stats Box -->
             <div class="match-card">
                 <h3><i class="fas fa-trophy" style="color: #0284c7; margin-right: 8px;"></i> Tournament Performers</h3>
                 <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.5rem;">Highlight the tournament top batsman and bowler.</p>
@@ -99,7 +86,6 @@
         </div>
     </div>
 
-    <!-- JS Link Fixed -->
     <script src="script.js"></script>
 </body>
 </html>
