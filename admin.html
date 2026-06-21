@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JCL - Secure Admin Dashboard</title>
-    <!-- CSS Path Fixed for GitHub Pages -->
+    <!-- CSS Link Fixed -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -19,7 +19,8 @@
             <h2>🔒 Admin Security Access</h2>
             <p style="margin-bottom: 1.5rem; color: #94a3b8; font-size: 0.9rem;">Authorized access only. Enter password to manage dashboard.</p>
             <div class="form-group">
-                <input type="password" id="adminPassword" placeholder="Enter Password" style="text-align: center; letter-spacing: 2px;">
+                <!-- Added enter key support for login -->
+                <input type="password" id="adminPassword" placeholder="Enter Password" style="text-align: center; letter-spacing: 2px;" onkeypress="if(event.key === 'Enter') checkAdminPassword()">
             </div>
             <button onclick="checkAdminPassword()" class="btn-submit" style="background: #0284c7;">Unlock Control Panel</button>
             <p id="login-error" style="color: #ef4444; margin-top: 12px; display: none; font-weight: bold;"><i class="fas fa-exclamation-circle"></i> Incorrect Password!</p>
@@ -98,7 +99,7 @@
         </div>
     </div>
 
-    <!-- JS Path Fixed for GitHub Pages -->
+    <!-- JS Link Fixed -->
     <script src="script.js"></script>
 </body>
 </html>
