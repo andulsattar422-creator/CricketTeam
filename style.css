@@ -127,6 +127,18 @@ nav a:hover { color: #3b82f6; }
 .teams { font-size: 1.4rem; font-weight: 800; margin-bottom: 0.8rem; }
 .venue { color: #94a3b8; font-size: 0.9rem; }
 
+/* Dynamic List Items inside Admin Panel */
+.admin-list-item {
+    display: flex; justify-content: space-between; align-items: center; 
+    padding: 6px 10px; background: rgba(255,255,255,0.05); 
+    border-radius: 4px; margin-bottom: 6px; font-size: 0.9rem;
+}
+.btn-delete-small {
+    background: #ef4444; color: white; border: none; padding: 3px 8px; 
+    border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold;
+}
+.btn-delete-small:hover { background: #b91c1c; }
+
 .gallery-item { border-radius: 16px; overflow: hidden; height: 260px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
 .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition); }
 .gallery-item:hover img { transform: scale(1.08); }
@@ -158,7 +170,6 @@ footer { text-align: center; padding: 3rem; background: var(--bg-card-dark); bor
     .section-container { padding: 4rem 5%; }
 }
 
-/* BACKGROUND ANIMATION EFFECT */
 .bg-animation-layer {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; pointer-events: none;
     background: radial-gradient(circle at 50% 50%, rgba(2, 132, 199, 0.05) 0%, transparent 80%);
